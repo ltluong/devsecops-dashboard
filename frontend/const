@@ -1,0 +1,64 @@
+const issues = [
+  {
+    id: 1,
+    tool: "SonarQube",
+    title: "SQL Injection",
+    severity: "Critical",
+
+    file: "src/api/user.js",
+
+    description:
+      "User input is directly concatenated into SQL query.",
+
+    recommendation:
+      "Use parameterized queries instead of string concatenation.",
+
+    code: `
+const query =
+ "SELECT * FROM users WHERE id = " + userInput;
+`
+  },
+
+  {
+    id: 2,
+    tool: "Snyk",
+    title: "Vulnerable Dependency",
+
+    severity: "High",
+
+    file: "package.json",
+
+    description:
+      "Lodash version vulnerable to prototype pollution.",
+
+    recommendation:
+      "Upgrade lodash to latest version.",
+
+    code: `
+"lodash": "4.17.15"
+`
+  },
+
+  {
+    id: 3,
+    tool: "Trivy",
+    title: "Container Running as Root",
+
+    severity: "Medium",
+
+    file: "Dockerfile",
+
+    description:
+      "Container configured to run as root user.",
+
+    recommendation:
+      "Use non-root user inside container.",
+
+    code: `
+USER root
+`
+  }
+];
+
+export default issues;
+

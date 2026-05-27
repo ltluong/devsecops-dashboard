@@ -1,0 +1,324 @@
+import { Link } from "react-router-dom";
+import { useState } from "react";
+
+export default function App() {
+
+  const [repoUrl, setRepoUrl] =
+    useState("");
+
+  const [scanning, setScanning] =
+    useState(false);
+
+  const startScan = () => {
+
+    if (!repoUrl) {
+
+      alert("Please enter GitHub repository URL");
+
+      return;
+    }
+
+    setScanning(true);
+
+    setTimeout(() => {
+
+      alert(
+        "Repository scanned successfully:\n\n" +
+        repoUrl
+      );
+
+      setScanning(false);
+
+    }, 3000);
+  };
+
+  return (
+
+    <div className="min-h-screen
+    bg-gradient-to-r
+    from-slate-950
+    to-slate-800
+    p-10">
+
+      {/* TITLE */}
+
+      <h1 className="text-6xl
+      font-bold
+      text-cyan-300
+      text-center
+      mb-14">
+
+        DevSecOps Dashboard
+
+      </h1>
+
+      {/* GITHUB INPUT */}
+
+      <div className="bg-slate-900
+      p-8
+      rounded-3xl
+      shadow-2xl
+      mb-12">
+
+        <h2 className="text-3xl
+        font-bold
+        text-cyan-300
+        mb-6">
+
+          Scan New GitHub Repository
+
+        </h2>
+
+        <div className="flex
+        flex-col
+        md:flex-row
+        gap-4">
+
+          <input
+            type="text"
+
+            placeholder="https://github.com/user/project"
+
+            value={repoUrl}
+
+            onChange={(e) =>
+              setRepoUrl(e.target.value)
+            }
+
+            className="flex-1
+            bg-slate-800
+            text-white
+            px-5 py-4
+            rounded-2xl
+            outline-none
+            border
+            border-slate-700"
+          />
+
+          <button
+            onClick={startScan}
+
+            className="bg-cyan-500
+            hover:bg-cyan-600
+            text-white
+            font-bold
+            px-8 py-4
+            rounded-2xl">
+
+            {scanning
+              ? "Scanning..."
+              : "Start Scan"}
+
+          </button>
+
+        </div>
+
+      </div>
+
+      {/* DASHBOARD */}
+
+      <div className="grid
+      grid-cols-1
+      md:grid-cols-3
+      gap-8">
+
+        {/* SONARQUBE */}
+
+        <div className="bg-slate-900
+        p-8
+        rounded-3xl
+        shadow-2xl
+        text-center">
+
+          <h2 className="text-3xl
+          font-bold
+          text-cyan-300
+          mb-8">
+
+            SonarQube Summary
+
+          </h2>
+
+          <div className="space-y-4
+          text-xl
+          text-white">
+
+            <p>Total Issues: 100</p>
+
+            <p className="text-red-400">
+              Critical: 49
+            </p>
+
+            <p className="text-orange-400">
+              Major: 24
+            </p>
+
+            <p className="text-yellow-300">
+              Minor: 27
+            </p>
+
+            <p>Code Smells: 91</p>
+
+            <p>Bugs: 9</p>
+
+            <p>Vulnerabilities: 0</p>
+
+          </div>
+
+        </div>
+
+        {/* SNYK */}
+
+        <div className="bg-slate-900
+        p-8
+        rounded-3xl
+        shadow-2xl
+        text-center">
+
+          <h2 className="text-3xl
+          font-bold
+          text-cyan-300
+          mb-8">
+
+            Snyk Vulnerabilities
+
+          </h2>
+
+          <div className="space-y-4
+          text-xl
+          text-white">
+
+            <p className="text-red-400">
+              Critical: 24
+            </p>
+
+            <p className="text-orange-400">
+              High: 124
+            </p>
+
+            <p className="text-yellow-300">
+              Medium: 231
+            </p>
+
+            <p className="text-green-400">
+              Low: 0
+            </p>
+
+            <p>Total: 379</p>
+
+          </div>
+
+        </div>
+
+        {/* TRIVY */}
+
+        <div className="bg-slate-900
+        p-8
+        rounded-3xl
+        shadow-2xl
+        text-center">
+
+          <h2 className="text-3xl
+          font-bold
+          text-cyan-300
+          mb-8">
+
+            Trivy Vulnerabilities
+
+          </h2>
+
+          <div className="space-y-4
+          text-xl
+          text-white">
+
+            <p className="text-red-400">
+              Critical: 0
+            </p>
+
+            <p className="text-orange-400">
+              High: 6
+            </p>
+
+            <p className="text-yellow-300">
+              Medium: 16
+            </p>
+
+            <p className="text-green-400">
+              Low: 1
+            </p>
+
+            <p>Total: 23</p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* BUTTONS */}
+
+      <div className="mt-16
+      flex
+      flex-wrap
+      justify-center
+      gap-6">
+
+        <Link
+          to="/sonar-details"
+
+          className="bg-red-500
+          hover:bg-red-600
+          text-white
+          text-center
+          text-lg
+          font-bold
+          px-6 py-3
+          rounded-2xl
+          inline-block
+          w-fit">
+
+          View SonarQube Details
+
+        </Link>
+
+        <Link
+          to="/snyk-details"
+
+          className="bg-pink-500
+          hover:bg-pink-600
+          text-white
+          text-center
+          text-lg
+          font-bold
+          px-6 py-3
+          rounded-2xl
+          inline-block
+          w-fit">
+
+          View Snyk Details
+
+        </Link>
+
+        <Link
+          to="/trivy-details"
+
+          className="bg-green-500
+          hover:bg-green-600
+          text-white
+          text-center
+          text-lg
+          font-bold
+          px-6 py-3
+          rounded-2xl
+          inline-block
+          w-fit">
+
+          View Trivy Details
+
+        </Link>
+
+      </div>
+
+    </div>
+  );
+}
