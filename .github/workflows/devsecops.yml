@@ -8,7 +8,35 @@ on:
   pull_request:
     branches:
       - main
+jobs:
 
+jobs:
+
+  sast:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Install Semgrep
+        run: |
+          python3 -m pip install semgrep
+
+      - name: Run SAST
+        run: |
+          semgrep scan \
+          --config auto \
+          --sarif \
+          --output sast-report.sarif \
+          .
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sast-report
+          path: sast-report.sarif
 jobs:
 
   quality-gates:
