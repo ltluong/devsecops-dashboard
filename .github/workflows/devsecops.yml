@@ -1,152 +1,161 @@
 name: DevSecOps Pipeline
 
 on:
-  push:
-    branches:
-      - main
+push:
+branches: [main]
 
-  pull_request:
-    branches:
-      - main
-jobs:
+pull_request:
+branches: [main]
 
 jobs:
 
-  sast:
+gate1:
 
-    runs-on: ubuntu-latest
+```
+runs-on: ubuntu-latest
 
-    steps:
+defaults:
+  run:
+    working-directory: frontend
 
-      - uses: actions/checkout@v4
+steps:
 
-      - name: Install Semgrep
-        run: |
-          python3 -m pip install semgrep
+  - name: Checkout Source
+    uses: actions/checkout@v4
 
-      - name: Run SAST
-        run: |
-          semgrep scan \
-          --config auto \
-          --sarif \
-          --output sast-report.sarif \
-          .
+  - name: Debug Structure
+    run: |
+      pwd
+      ls -la
+      find .. -name package.json
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: sast-report
-          path: sast-report.sarif
-jobs:
+  ####################################################
+  # Gate 1.4 - Install Dependencies
+  ####################################################
 
-  quality-gates:
+  - name: Setup NodeJS
+    uses: actions/setup-node@v4
+    with:
+      node-version: 20
 
-    runs-on: ubuntu-latest
+  - name: Install Dependencies
+    run: npm install
 
-    steps:
+  ####################################################
+  # Gate 1.1 - SonarQube Quality Gate
+  ####################################################
 
-      - name: Checkout Source
-        uses: actions/checkout@v4
+  - name: SonarQube Scan
+    uses: SonarSource/sonarqube-scan-action@v5
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-      - name: Setup NodeJS
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+  - name: SonarQube Quality Gate
+    uses: SonarSource/sonarqube-quality-gate-action@master
+    timeout-minutes: 10
+    env:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Install Dependencies
-        run: npm install
+  ####################################################
+  # Gate 1.2 - Semgrep SAST
+  ####################################################
 
-      ##################################################
-      # GATE 1.4 - BUILD / TEST GATE
-      ##################################################
+  - name: Install Semgrep
+    run: |
+      python3 -m pip install --user semgrep
+      echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Run Unit Tests
-        run: npm test -- --coverage
+  - name: Run Semgrep
+    run: |
+      ~/.local/bin/semgrep scan \
+      --config auto \
+      --sarif \
+      --output sast-report.sarif \
+      .
 
-      ##################################################
-      # GATE 1.2 - SAST GATE
-      ##################################################
+  - name: SAST Quality Gate
+    run: |
+      sudo apt-get update
+      sudo apt-get install jq -y
 
-      - name: Run Semgrep
-        uses: returntocorp/semgrep-action@v1
-        with:
-          config: p/security-audit
+      ERRORS=$(jq '[.runs[].results[] |
+      select(.level=="error")] | length' \
+      sast-report.sarif)
 
-      ##################################################
-      # GATE 1.3 - SCA GATE
-      ##################################################
+      echo "Critical Findings: $ERRORS"
 
-      - name: Run Trivy Dependency Scan
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: fs
-          scan-ref: .
-          format: table
-          severity: HIGH,CRITICAL
-          exit-code: 1
+      if [ "$ERRORS" -gt 0 ]; then
+        echo "Gate 1.2 FAILED"
+        exit 1
+      fi
 
-      ##################################################
-      # GATE 1.1 - SONARQUBE
-      ##################################################
+      echo "Gate 1.2 PASSED"
 
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+  - name: Upload SAST Report
+    uses: actions/upload-artifact@v4
+    with:
+      name: sast-report
+      path: frontend/sast-report.sarif
 
-      - name: SonarQube Quality Gate
-        uses: SonarSource/sonarqube-quality-gate-action@master
-        timeout-minutes: 5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  ####################################################
+  # Gate 1.3 - SCA Dependency Scan
+  ####################################################
 
-  docker-build:
+  - name: Install Trivy
+    uses: aquasecurity/setup-trivy@v0.2.2
 
-    needs: quality-gates
+  - name: Generate SBOM
+    run: |
+      trivy fs \
+      --format cyclonedx \
+      --output sbom.json \
+      .
 
-    runs-on: ubuntu-latest
+  - name: Run Trivy SCA
+    run: |
+      trivy fs \
+      --severity HIGH,CRITICAL \
+      --format json \
+      --output trivy-results.json \
+      .
 
-    steps:
+  - name: Gate 1.3 Decision
+    run: |
+      HIGH=$(jq '
+      [.Results[]?.Vulnerabilities[]? |
+      select(.Severity=="HIGH" or .Severity=="CRITICAL")]
+      | length' trivy-results.json)
 
-      - uses: actions/checkout@v4
+      echo "High/Critical CVEs: $HIGH"
 
-      - name: Login DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+      if [ "$HIGH" -gt 0 ]; then
+        echo "Gate 1.3 FAILED"
+        exit 1
+      fi
 
-      - name: Build Docker Image
-        run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/devsecops-dashboard:latest .
+      echo "Gate 1.3 PASSED"
 
-      - name: Push Docker Image
-        run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/devsecops-dashboard:latest
+  - name: Upload SBOM
+    uses: actions/upload-artifact@v4
+    with:
+      name: sbom
+      path: frontend/sbom.json
 
-  deploy:
+  - name: Upload Trivy Report
+    uses: actions/upload-artifact@v4
+    with:
+      name: trivy-report
+      path: frontend/trivy-results.json
 
-    needs: docker-build
+  ####################################################
+  # Gate 1.4 - Unit Test + Coverage
+  ####################################################
 
-    runs-on: ubuntu-latest
+  - name: Run Unit Test
+    run: npm test -- --coverage --watchAll=false
 
-    steps:
+  - name: Build Application
+    run: npm run build
+```
 
-      - name: Deploy To Ubuntu Server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
-
-          script: |
-            docker pull ${{ secrets.DOCKER_USERNAME }}/devsecops-dashboard:latest
-
-            docker stop devsecops-dashboard || true
-            docker rm devsecops-dashboard || true
-
-            docker run -d \
-              --name devsecops-dashboard \
-              -p 80:80 \
-              ${{ secrets.DOCKER_USERNAME }}/devsecops-dashboard:latest
