@@ -1,0 +1,13 @@
+node_modules/
+coverage/
+
+*.sarif
+
+image-scan*.json
+trivy-results.json
+sbom.json
+snyk-results.json
+
+dist/
+
+.env

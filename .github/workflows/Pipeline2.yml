@@ -1,0 +1,159 @@
+name: Gate 2 - Build Security Gates
+
+on:
+  push:
+    branches: [main]
+
+  pull_request:
+    branches: [main]
+
+jobs:
+
+  gate2:
+
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+
+    ####################################################
+    # Checkout
+    ####################################################
+
+    - name: Checkout Source
+      uses: actions/checkout@v4
+
+    ####################################################
+    # Build React Application
+    ####################################################
+
+    - name: Setup NodeJS
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Install Dependencies
+      run: npm install
+
+    - name: Build Frontend
+      run: npm run build
+
+    ####################################################
+    # Gate 2.1 - Docker Build
+    ####################################################
+
+    - name: Build Docker Image
+      run: |
+        docker build \
+        -t devsecops-dashboard:${{ github.sha }} \
+        .
+
+    ####################################################
+    # Gate 2.1 - Container Security Scan
+    ####################################################
+
+    - name: Install Trivy
+      uses: aquasecurity/setup-trivy@v0.2.2
+
+    - name: Scan Docker Image
+      run: |
+        trivy image \
+        --severity HIGH,CRITICAL \
+        --format json \
+        --output image-scan.json \
+        devsecops-dashboard:${{ github.sha }}
+
+    - name: Gate 2.1 Decision
+      run: |
+
+        COUNT=$(jq '
+        [.Results[]?.Vulnerabilities[]? |
+        select(.Severity=="HIGH" or .Severity=="CRITICAL")]
+        | length
+        ' image-scan.json)
+
+        echo "High/Critical CVEs: $COUNT"
+
+        if [ "$COUNT" -gt 0 ]; then
+          echo "Gate 2.1 FAILED"
+          exit 1
+        fi
+
+        echo "Gate 2.1 PASSED"
+
+    - name: Upload Container Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: container-scan-report
+        path: frontend/image-scan.json
+
+    ####################################################
+    # Gate 2.2 - Dockerfile Security Scan
+    ####################################################
+
+    - name: Install Checkov
+      run: |
+        python3 -m pip install checkov
+
+    - name: Scan Dockerfile
+      run: |
+        checkov \
+        -f Dockerfile \
+        -o json \
+        > dockerfile-scan.json
+
+    - name: Dockerfile Gate
+      run: |
+
+        FAILED=$(jq '.summary.failed' \
+        dockerfile-scan.json)
+
+        echo "Failed Policies: $FAILED"
+
+        if [ "$FAILED" -gt 0 ]; then
+          echo "Gate 2.2 FAILED"
+          exit 1
+        fi
+
+        echo "Gate 2.2 PASSED"
+
+    - name: Upload Dockerfile Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: dockerfile-report
+        path: frontend/dockerfile-scan.json
+
+    ####################################################
+    # Gate 2.2 - Docker Compose Scan
+    ####################################################
+
+    - name: Scan Docker Compose
+      run: |
+        checkov \
+        -f ../docker-compose.yml \
+        -o json \
+        > compose-scan.json
+
+    - name: Compose Gate
+      run: |
+
+        FAILED=$(jq '.summary.failed' \
+        compose-scan.json)
+
+        echo "Failed Policies: $FAILED"
+
+        if [ "$FAILED" -gt 0 ]; then
+          echo "Gate 2.2 FAILED"
+          exit 1
+        fi
+
+        echo "Gate 2.2 PASSED"
+
+    - name: Upload Compose Report
+      uses: actions/upload-artifact@v4
+      with:
+        name: compose-report
+        path: frontend/compose-scan.json
