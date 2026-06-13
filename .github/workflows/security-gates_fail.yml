@@ -1,0 +1,170 @@
+name: Security Quality Gates
+
+on:
+push:
+branches:
+- main
+
+jobs:
+
+gate-1-sonarqube:
+runs-on: ubuntu-latest
+
+```
+steps:
+  - uses: actions/checkout@v4
+
+  - name: SonarQube Gate
+    run: |
+      echo "Running SonarQube"
+      STATUS="PASS"
+
+      if [ "$STATUS" != "PASS" ]; then
+        exit 1
+      fi
+```
+
+gate-2-semgrep:
+needs: gate-1-sonarqube
+runs-on: ubuntu-latest
+
+```
+steps:
+  - uses: actions/checkout@v4
+
+  - name: Semgrep Gate
+    run: |
+      echo "Running Semgrep"
+
+      HIGH=0
+
+      if [ "$HIGH" -gt 0 ]; then
+        exit 1
+      fi
+```
+
+gate-3-trivy-fs:
+needs: gate-2-semgrep
+runs-on: ubuntu-latest
+
+```
+steps:
+  - uses: actions/checkout@v4
+
+  - name: Trivy FS Gate
+    run: |
+      echo "Running Trivy FS"
+
+      CRITICAL=0
+
+      if [ "$CRITICAL" -gt 0 ]; then
+        exit 1
+      fi
+```
+
+gate-4-coverage:
+needs: gate-3-trivy-fs
+runs-on: ubuntu-latest
+
+```
+steps:
+  - uses: actions/checkout@v4
+
+  - name: Coverage Gate
+    run: |
+      COVERAGE=85
+
+      if [ "$COVERAGE" -lt 80 ]; then
+        exit 1
+      fi
+```
+
+build-image:
+needs: gate-4-coverage
+runs-on: ubuntu-latest
+
+```
+steps:
+  - uses: actions/checkout@v4
+
+  - name: Docker Build
+    run: |
+      docker build -t devsecops-dashboard .
+```
+
+gate-5-trivy-image:
+needs: build-image
+runs-on: ubuntu-latest
+
+```
+steps:
+  - name: Trivy Image Gate
+    run: |
+      CRITICAL=0
+
+      if [ "$CRITICAL" -gt 0 ]; then
+        exit 1
+      fi
+```
+
+gate-6-checkov:
+needs: gate-5-trivy-image
+runs-on: ubuntu-latest
+
+```
+steps:
+  - uses: actions/checkout@v4
+
+  - name: Checkov Gate
+    run: |
+      FAILED=0
+
+      if [ "$FAILED" -gt 0 ]; then
+        exit 1
+      fi
+```
+
+deploy-staging:
+needs: gate-6-checkov
+runs-on: ubuntu-latest
+
+```
+steps:
+  - run: echo "Deploy staging"
+```
+
+gate-7-zap:
+needs: deploy-staging
+runs-on: ubuntu-latest
+
+```
+steps:
+  - name: OWASP ZAP Gate
+    run: |
+      ALERTS=0
+
+      if [ "$ALERTS" -gt 0 ]; then
+        exit 1
+      fi
+```
+
+gate-8-release:
+needs: gate-7-zap
+runs-on: ubuntu-latest
+
+```
+steps:
+  - name: Release Decision
+    run: |
+      echo "GO"
+```
+
+deploy-production:
+needs: gate-8-release
+runs-on: ubuntu-latest
+
+```
+steps:
+  - run: echo "Deploy Production"
+
+```

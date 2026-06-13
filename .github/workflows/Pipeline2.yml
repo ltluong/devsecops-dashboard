@@ -55,8 +55,13 @@ jobs:
     # Gate 2.1 - Container Security Scan
     ####################################################
 
-    - name: Install Trivy
-      uses: aquasecurity/setup-trivy@v0.54.0
+- name: Install Trivy
+  run: |
+    sudo apt-get update
+    sudo apt-get install wget -y
+
+    wget -qO- https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
+      | sudo sh -s -- -b /usr/local/bin
 
     - name: Scan Docker Image
       run: |

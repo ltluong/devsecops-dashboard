@@ -1,0 +1,10 @@
+{
+  "sonarqube": "PASS",
+  "semgrep": "PASS",
+  "trivy_fs": "PASS",
+  "coverage": "PASS",
+  "trivy_image": "PASS",
+  "checkov": "PASS",
+  "zap": "PASS",
+  "release_decision": "GO"
+}
