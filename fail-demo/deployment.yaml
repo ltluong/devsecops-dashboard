@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: fail-demo
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: fail-demo
+
+  template:
+
+    metadata:
+      labels:
+        app: fail-demo
+
+    spec:
+
+      containers:
+
+      - name: fail-demo
+
+        image: fail-demo
+
+        securityContext:
+          privileged: true
+          runAsUser: 0
