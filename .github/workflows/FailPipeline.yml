@@ -1,0 +1,137 @@
+name: DevSecOps-8Gates
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  gate11-sast:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+
+      - run: |
+          pip install semgrep
+
+      - run: |
+          cd fail-demo
+          semgrep scan . --error
+
+  gate12-dependency:
+    needs: gate11-sast
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: ./fail-demo
+          severity: HIGH,CRITICAL
+          exit-code: 1
+
+  gate13-secret:
+    needs: gate12-dependency
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
+          sudo apt update
+          sudo apt install gitleaks -y
+
+      - run: |
+          gitleaks detect \
+          --source fail-demo \
+          --exit-code 1
+
+  gate14-coverage:
+    needs: gate13-secret
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+
+      - run: |
+          cd fail-demo
+
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+          pytest \
+          --cov=. \
+          --cov-fail-under=80
+
+  gate21-container:
+    needs: gate14-coverage
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
+          docker build \
+          -t fail-demo \
+          ./fail-demo
+
+      - uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: fail-demo
+          format: table
+          severity: HIGH,CRITICAL
+          exit-code: 1
+
+  gate22-iac:
+    needs: gate21-container
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: config
+          scan-ref: ./fail-demo
+          exit-code: 1
+
+  gate31-dast:
+    needs: gate22-iac
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: |
+          docker build \
+          -t fail-demo \
+          ./fail-demo
+
+          docker run -d \
+          -p 5000:5000 \
+          --name fail-demo \
+          fail-demo
+
+      - run: |
+          docker run \
+          --network host \
+          ghcr.io/zaproxy/zaproxy:stable \
+          zap-baseline.py \
+          -t http://localhost:5000 \
+          -I
+
+  gate32-release:
+    needs: gate31-dast
+    runs-on: ubuntu-latest
+
+    steps:
+      - run: |
+          echo "GO"
