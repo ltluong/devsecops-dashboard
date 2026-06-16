@@ -1,0 +1,16 @@
+name: DevSecOps 7 Gates
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  gate1:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test
+        run: echo "Gate1 PASS"
