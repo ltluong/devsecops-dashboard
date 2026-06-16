@@ -1,0 +1,1285 @@
+               
+               
+┌─────────────┐
+│ Scan Status │
+└─────────────┘
+  Scanning 2231 files tracked by git with 1059 Code rules:
+                                                                                                                        
+  Language      Rules   Files          Origin      Rules                                                                
+ ─────────────────────────────        ───────────────────                                                               
+  <multilang>      47    2231          Community    1059                                                                
+  python          243    1063                                                                                           
+  js              153       2                                                                                           
+  yaml             31       1                                                                                           
+  dockerfile        6       1                                                                                           
+  c                 5       1                                                                                           
+  json              4       1                                                                                           
+                                                                                                                        
+Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/packaging/licenses/_spdx.py when running the
+following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
+Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pip/_internal/vcs/versioncontrol.py when
+running the following rules: [python.django.security.injection.command.subprocess-injection.subprocess-injection]
+Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/idna/uts46data.py when running
+the following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
+Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/pygments/lexers/_mapping.py when
+running the following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
+Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/rich/_emoji_codes.py when running
+the following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
+Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/_cocoa_builtins.py when
+running the following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
+Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/_lasso_builtins.py when
+running the following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
+Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/_lilypond_builtins.py when
+running the following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
+Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/_mapping.py when running the
+following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
+Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/_php_builtins.py when running
+the following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
+Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/_vim_builtins.py when running
+the following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
+Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/lisp.py when running the
+following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
+Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/matlab.py when running the
+following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
+Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/phix.py when running the
+following rules: [python.lang.security.audit.insecure-transport.requests.request-with-http.request-with-http]
+Warning: 3 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/werkzeug/debug/shared/jquery.js when running
+the following rules: [javascript.aws-lambda.security.tainted-html-response.tainted-html-response, javascript.aws-
+lambda.security.tainted-html-string.tainted-html-string, javascript.express.security.audit.express-ssrf.express-ssrf]
+Semgrep stopped running rules on fail-demo/venv/lib/python3.12/site-packages/werkzeug/debug/shared/jquery.js after 3
+timeout error(s). See `--timeout-threshold` for more info.
+                     
+                     
+┌───────────────────┐
+│ 146 Code Findings │
+└───────────────────┘
+                        
+    fail-demo/Dockerfile
+   ❯❯❱ dockerfile.security.last-user-is-root.last-user-is-root
+          ❰❰ Blocking ❱❱
+          The last user in the container is 'root'. This is a security hazard because if an attacker gains
+          control of the container they will have root access. Switch back to another user after running  
+          commands as 'root'.                                                                             
+          Details: https://sg.run/5Z43                                                                    
+                                                                                                          
+            3┆ USER root
+                    
+    fail-demo/app.py
+    ❯❱ python.django.security.injection.code.user-eval.user-eval
+          ❰❰ Blocking ❱❱
+          Found user data in a call to 'eval'. This is extremely dangerous because it can enable an attacker
+          to execute arbitrary remote code on the system. Instead, refactor your code to not use 'eval' and 
+          instead use a safe library for the specific functionality you need.                               
+          Details: https://sg.run/PJDW                                                                      
+                                                                                                            
+           22┆ q = request.args.get("q")
+           23┆
+           24┆ eval(q)
+   
+   ❯❯❱ python.flask.security.injection.user-eval.eval-injection
+          ❰❰ Blocking ❱❱
+          Detected user data flowing into eval. This is code injection and should be avoided.
+          Details: https://sg.run/5QpX                                                       
+                                                                                             
+           24┆ eval(q)
+   
+    ❯❱ python.lang.security.audit.eval-detected.eval-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ZvrD                                                                     
+                                                                                                           
+           24┆ eval(q)
+   
+    ❯❱ python.flask.security.audit.directly-returned-format-string.directly-returned-format-string
+          ❰❰ Blocking ❱❱
+          Detected Flask route directly returning a formatted string. This is subject to cross-site scripting
+          if user input can reach the string. Consider using the template engine instead and rendering pages 
+          with 'render_template()'.                                                                          
+          Details: https://sg.run/Zv6o                                                                       
+                                                                                                             
+           26┆ return f"Result: {q}"
+   
+    ❯❱ python.flask.security.audit.app-run-param-config.avoid_app_run_with_bad_host
+          ❰❰ Blocking ❱❱
+          Running flask app with host 0.0.0.0 could expose the server publicly.
+          Details: https://sg.run/eLby                                         
+                                                                               
+           28┆ app.run(
+           29┆     host="0.0.0.0",
+           30┆     port=5000
+           31┆ )
+   
+    ❯❱ python.flask.security.audit.app-run-security-config.avoid_using_app_run_directly
+          ❰❰ Blocking ❱❱
+          top-level app.run(...) is ignored by flask. Consider putting app.run(...) behind a guard, like
+          inside a function                                                                             
+          Details: https://sg.run/vz5b                                                                  
+                                                                                                        
+           28┆ app.run(
+           29┆     host="0.0.0.0",
+           30┆     port=5000
+           31┆ )
+                             
+    fail-demo/deployment.yaml
+     ❱ yaml.kubernetes.security.run-as-non-root.run-as-non-root
+          ❰❰ Blocking ❱❱
+          When running containers in Kubernetes, it's important to ensure that they  are properly secured to  
+          prevent privilege escalation attacks.  One potential vulnerability is when a container is allowed to
+          run  applications as the root user, which could allow an attacker to gain  access to sensitive      
+          resources. To mitigate this risk, it's recommended to  add a `securityContext` to the container,    
+          with the parameter `runAsNonRoot`  set to `true`. This will ensure that the container runs as a non-
+          root user,  limiting the damage that could be caused by any potential attacks. By  adding a         
+          `securityContext` to the container in your Kubernetes pod, you can  help to ensure that your        
+          containerized applications are more secure and  less vulnerable to privilege escalation attacks.    
+          Details: https://sg.run/dgP5                                                                        
+                                                                                                              
+           ▶▶┆ Autofix ▶ spec: securityContext: runAsNonRoot: true #
+           20┆ spec:
+   
+    ❯❱ yaml.kubernetes.security.privileged-container.privileged-container
+          ❰❰ Blocking ❱❱
+          Container or pod is running in privileged mode. This grants the container the equivalent of root
+          capabilities on the host machine. This can lead to container escapes, privilege escalation, and 
+          other security concerns. Remove the 'privileged' key to disable this capability.                
+          Details: https://sg.run/Ygr5                                                                    
+                                                                                                          
+           24┆ - name: fail-demo
+           25┆
+           26┆   image: fail-demo
+           27┆
+           28┆   securityContext:
+           29┆     privileged: true
+           30┆     runAsUser: 0
+   
+    ❯❱ yaml.kubernetes.security.allow-privilege-escalation.allow-privilege-escalation
+          ❰❰ Blocking ❱❱
+          In Kubernetes, each pod runs in its own isolated environment with its own set of security policies. 
+          However, certain container images may contain `setuid` or `setgid` binaries that could allow an     
+          attacker to perform privilege escalation and gain access to sensitive resources. To mitigate this   
+          risk, it's recommended to add a `securityContext` to the container in the pod, with the parameter   
+          `allowPrivilegeEscalation` set to `false`. This will prevent the container from running any         
+          privileged processes and limit the impact of any potential attacks. By adding the                   
+          `allowPrivilegeEscalation` parameter to your the `securityContext`, you can help to ensure that your
+          containerized applications are more secure and less vulnerable to privilege escalation attacks.     
+          Details: https://sg.run/ljp6                                                                        
+                                                                                                              
+           ▶▶┆ Autofix ▶ securityContext: allowPrivilegeEscalation: false #
+           28┆ securityContext:
+                                                                     
+    fail-demo/venv/lib/python3.12/site-packages/_pytest/_code/code.py
+    ❯❱ python.lang.security.audit.eval-detected.eval-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ZvrD                                                                     
+                                                                                                           
+          170┆ return eval(code, self.f_globals, f_locals)
+                                                                   
+    fail-demo/venv/lib/python3.12/site-packages/_pytest/_py/path.py
+    ❯❱ python.lang.security.audit.exec-detected.exec-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ndRX                                                                     
+                                                                                                           
+          1153┆ exec(f.read(), mod.__dict__)
+                                                                            
+    fail-demo/venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py
+   ❯❯❱ python.lang.compatibility.python37.python37-compatibility-importlib2
+          ❰❰ Blocking ❱❱
+          Found 'importlib.resources', which is a module only available on Python 3.7+. This does not work in 
+          lower versions, and therefore is not backwards compatible. Use importlib_resources instead for older
+          Python versions.                                                                                    
+          Details: https://sg.run/eL3y                                                                        
+                                                                                                              
+           31┆ from importlib.resources.abc import TraversableResources
+            ⋮┆----------------------------------------
+           37┆ from importlib.resources.readers import FileReader
+   
+    ❯❱ python.lang.security.audit.exec-detected.exec-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ndRX                                                                     
+                                                                                                           
+          197┆ exec(co, module.__dict__)
+   
+    ❯❱ python.lang.security.audit.marshal.marshal-usage
+          ❰❰ Blocking ❱❱
+          The marshal module is not intended to be secure against erroneous or maliciously constructed data.
+          Never unmarshal data received from an untrusted or unauthenticated source. See more details:      
+          https://docs.python.org/3/library/marshal.html?highlight=security                                 
+          Details: https://sg.run/3xor                                                                      
+                                                                                                            
+          324┆ fp.write(marshal.dumps(co))
+            ⋮┆----------------------------------------
+          402┆ co = marshal.load(fp)
+                                                                          
+    fail-demo/venv/lib/python3.12/site-packages/_pytest/mark/expression.py
+    ❯❱ python.lang.security.audit.eval-detected.eval-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ZvrD                                                                     
+                                                                                                           
+          353┆ return bool(eval(self._code, {"__builtins__": {}}, MatcherAdapter(matcher)))
+                                                                   
+    fail-demo/venv/lib/python3.12/site-packages/_pytest/pastebin.py
+    ❯❱ python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected
+          ❰❰ Blocking ❱❱
+          Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic    
+          value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib  
+          calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+          Details: https://sg.run/dKZZ                                                                        
+                                                                                                              
+           87┆ urlopen(url, data=urlencode(params).encode("ascii")).read().decode("utf-8")
+                                                                  
+    fail-demo/venv/lib/python3.12/site-packages/_pytest/pathlib.py
+    ❯❱ python.lang.security.audit.non-literal-import.non-literal-import
+          ❰❰ Blocking ❱❱
+          Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary
+          code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running  
+          untrusted code.                                                                                  
+          Details: https://sg.run/y6Jk                                                                     
+                                                                                                           
+          587┆ importlib.import_module(module_name)
+            ⋮┆----------------------------------------
+          822┆ parent_module = importlib.import_module(parent_module_name)
+                                                                   
+    fail-demo/venv/lib/python3.12/site-packages/_pytest/pytester.py
+    ❯❱ python.lang.security.audit.eval-detected.eval-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ZvrD                                                                     
+                                                                                                           
+          295┆ if eval(check, backlocals, call.__dict__):
+                                                                   
+    fail-demo/venv/lib/python3.12/site-packages/_pytest/skipping.py
+    ❯❱ python.lang.security.audit.eval-detected.eval-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ZvrD                                                                     
+                                                                                                           
+          119┆ result = eval(condition_code, globals_)
+                                                                     
+    fail-demo/venv/lib/python3.12/site-packages/click/_termui_impl.py
+   ❯❯❱ python.lang.compatibility.python36.python36-compatibility-Popen1
+          ❰❰ Blocking ❱❱
+          the `errors` argument to Popen is only available on Python 3.6+
+          Details: https://sg.run/weBP                                   
+                                                                         
+          510┆ c = subprocess.Popen(
+          511┆     [str(cmd_path)] + cmd_params,
+          512┆     shell=False,
+          513┆     stdin=subprocess.PIPE,
+          514┆     env=env,
+          515┆     errors="replace",
+          516┆     text=True,
+          517┆ )
+                                                               
+    fail-demo/venv/lib/python3.12/site-packages/click/parser.py
+    ❯❱ python.lang.security.dangerous-globals-use.dangerous-globals-use
+          ❰❰ Blocking ❱❱
+          Found non static data as an index to 'globals()'. This is extremely dangerous because it allows an
+          attacker to execute arbitrary code on the system. Refactor your code not to use 'globals()'.      
+          Details: https://sg.run/jNzn                                                                      
+                                                                                                            
+          520┆ return globals()[f"_{name}"]
+                                                            
+    fail-demo/venv/lib/python3.12/site-packages/flask/cli.py
+    ❯❱ python.lang.security.audit.eval-detected.eval-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ZvrD                                                                     
+                                                                                                           
+          802┆ eval(compile(f.read(), startup, 'exec'), ctx)
+                                                               
+    fail-demo/venv/lib/python3.12/site-packages/flask/config.py
+    ❯❱ python.lang.security.audit.exec-detected.exec-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ndRX                                                                     
+                                                                                                           
+          130┆ exec(compile(config_file.read(), filename, 'exec'), d.__dict__)
+                                                                                     
+    fail-demo/venv/lib/python3.12/site-packages/itsdangerous-2.2.0.dist-info/METADATA
+   ❯❯❱ generic.secrets.security.detected-jwt-token.detected-jwt-token
+          ❰❰ Blocking ❱❱
+          JWT token detected          
+          Details: https://sg.run/05N5
+                                      
+           44┆ # eyJpZCI6NSwibmFtZSI6Iml0c2Rhbmdlcm91cyJ9.6YP6T0BaO67XP--9UzTrmurXSmg
+                                                                      
+    fail-demo/venv/lib/python3.12/site-packages/itsdangerous/signer.py
+    ❯❱ python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1
+          ❰❰ Blocking ❱❱
+          Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is
+          therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.                 
+          Details: https://sg.run/ydYx                                                                     
+                                                                                                           
+           ▶▶┆ Autofix ▶ hashlib.sha256(string)
+           45┆ return hashlib.sha1(string)
+                                                                 
+    fail-demo/venv/lib/python3.12/site-packages/jinja2/bccache.py
+    ❯❱ python.lang.security.audit.marshal.marshal-usage
+          ❰❰ Blocking ❱❱
+          The marshal module is not intended to be secure against erroneous or maliciously constructed data.
+          Never unmarshal data received from an untrusted or unauthenticated source. See more details:      
+          https://docs.python.org/3/library/marshal.html?highlight=security                                 
+          Details: https://sg.run/3xor                                                                      
+                                                                                                            
+           38┆ marshal.dump(code, f)
+            ⋮┆----------------------------------------
+           40┆ f.write(marshal.dumps(code))
+            ⋮┆----------------------------------------
+           44┆ return marshal.load(f)
+            ⋮┆----------------------------------------
+           45┆ return marshal.loads(f.read())
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-pickle
+          ❰❰ Blocking ❱❱
+          Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the
+          serialized data could be manipulated to run arbitrary code. Instead, consider serializing the       
+          relevant data as JSON or a similar text-based serialization format.                                 
+          Details: https://sg.run/OPwB                                                                        
+                                                                                                              
+           56┆ pickle.dumps(bc_version, 2) + \
+            ⋮┆----------------------------------------
+           57┆ pickle.dumps((sys.version_info[0] << 24) | sys.version_info[1])
+            ⋮┆----------------------------------------
+           87┆ checksum = pickle.load(f)
+            ⋮┆----------------------------------------
+          103┆ pickle.dump(self.checksum, f, 2)
+   
+    ❯❱ python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1
+          ❰❰ Blocking ❱❱
+          Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is
+          therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.                 
+          Details: https://sg.run/ydYx                                                                     
+                                                                                                           
+           ▶▶┆ Autofix ▶ sha256(name.encode('utf-8'))
+          168┆ hash = sha1(name.encode('utf-8'))
+            ⋮┆----------------------------------------
+           ▶▶┆ Autofix ▶ sha256(source.encode('utf-8'))
+          178┆ return sha1(source.encode('utf-8')).hexdigest()
+                                                               
+    fail-demo/venv/lib/python3.12/site-packages/jinja2/debug.py
+    ❯❱ python.lang.security.audit.exec-detected.exec-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ndRX                                                                     
+                                                                                                           
+          289┆ exec(code, globals, locals)
+                                                                     
+    fail-demo/venv/lib/python3.12/site-packages/jinja2/environment.py
+    ❯❱ python.lang.security.audit.marshal.marshal-usage
+          ❰❰ Blocking ❱❱
+          The marshal module is not intended to be secure against erroneous or maliciously constructed data.
+          Never unmarshal data received from an untrusted or unauthenticated source. See more details:      
+          https://docs.python.org/3/library/marshal.html?highlight=security                                 
+          Details: https://sg.run/3xor                                                                      
+                                                                                                            
+          721┆ marshal.dumps(c), 'wb')
+   
+    ❯❱ python.lang.security.audit.exec-detected.exec-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ndRX                                                                     
+                                                                                                           
+          956┆ exec(code, namespace)
+   
+    ❯❱ python.django.security.audit.xss.html-magic-method.html-magic-method
+          ❰❰ Blocking ❱❱
+          The `__html__` method indicates to the Django template engine that the value is 'safe' for       
+          rendering. This means that normal HTML escaping will not be applied to the return value. This    
+          exposes your application to cross-site scripting (XSS) vulnerabilities. If you need to render raw
+          HTML, consider instead using `mark_safe()` which more clearly marks the intent to render raw HTML
+          than a class with a magic method.                                                                
+          Details: https://sg.run/8y9N                                                                     
+                                                                                                           
+          1157┆ def __html__(self):
+          1158┆     return Markup(concat(self._body_stream))
+                                                                 
+    fail-demo/venv/lib/python3.12/site-packages/jinja2/loaders.py
+    ❯❱ python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1
+          ❰❰ Blocking ❱❱
+          Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is
+          therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.                 
+          Details: https://sg.run/ydYx                                                                     
+                                                                                                           
+           ▶▶┆ Autofix ▶ sha256(name.encode('utf-8'))
+          459┆ return 'tmpl_' + sha1(name.encode('utf-8')).hexdigest()
+                                                                      
+    fail-demo/venv/lib/python3.12/site-packages/markupsafe/__init__.py
+    ❯❱ python.django.security.audit.xss.html-magic-method.html-magic-method
+          ❰❰ Blocking ❱❱
+          The `__html__` method indicates to the Django template engine that the value is 'safe' for       
+          rendering. This means that normal HTML escaping will not be applied to the return value. This    
+          exposes your application to cross-site scripting (XSS) vulnerabilities. If you need to render raw
+          HTML, consider instead using `mark_safe()` which more clearly marks the intent to render raw HTML
+          than a class with a magic method.                                                                
+          Details: https://sg.run/8y9N                                                                     
+                                                                                                           
+           17┆ def __html__(self, /) -> str: ...
+            ⋮┆----------------------------------------
+          133┆ def __html__(self, /) -> te.Self:
+          134┆     return self
+   
+    ❯❱ python.flask.security.xss.audit.explicit-unescape-with-markup.explicit-unescape-with-markup
+          ❰❰ Blocking ❱❱
+          Detected explicitly unescaped content using 'Markup()'. This permits the unescaped data to include
+          unescaped HTML which could result in cross-site scripting. Ensure this data is not externally     
+          controlled, or consider rewriting to not use 'Markup()'.                                          
+          Details: https://sg.run/AvZ8                                                                      
+                                                                                                            
+          228┆ return self.__class__(value).unescape()
+                                                                      
+    fail-demo/venv/lib/python3.12/site-packages/pip/_internal/cache.py
+    ❯❱ python.lang.security.audit.sha224-hash.sha224-hash
+          ❰❰ Blocking ❱❱
+          This code uses a 224-bit hash function, which is deprecated or disallowed in some security policies.
+          Consider updating to a stronger hash function such as SHA-384 or higher to ensure compliance and    
+          security.                                                                                           
+          Details: https://sg.run/Db1Yv                                                                       
+                                                                                                              
+           29┆ return hashlib.sha224(s.encode("ascii")).hexdigest()
+                                                                                  
+    fail-demo/venv/lib/python3.12/site-packages/pip/_internal/commands/__init__.py
+    ❯❱ python.lang.security.audit.non-literal-import.non-literal-import
+          ❰❰ Blocking ❱❱
+          Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary
+          code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running  
+          untrusted code.                                                                                  
+          Details: https://sg.run/y6Jk                                                                     
+                                                                                                           
+          114┆ module = importlib.import_module(module_path)
+                                                                                       
+    fail-demo/venv/lib/python3.12/site-packages/pip/_internal/commands/configuration.py
+   ❯❯❱ python.lang.security.audit.subprocess-shell-true.subprocess-shell-true
+          ❰❰ Blocking ❱❱
+          Found 'subprocess' function 'check_call' with 'shell=True'. This is dangerous because this call will
+          spawn the command using a shell process. Doing so propagates current shell settings and variables,  
+          which makes it much easier for a malicious actor to execute commands. Use 'shell=False' instead.    
+          Details: https://sg.run/J92w                                                                        
+                                                                                                              
+           ▶▶┆ Autofix ▶ False
+          239┆ subprocess.check_call(f'{editor} "{fname}"', shell=True)
+                                                                               
+    fail-demo/venv/lib/python3.12/site-packages/pip/_internal/commands/debug.py
+   ❯❯❱ python.lang.compatibility.python37.python37-compatibility-importlib2
+          ❰❰ Blocking ❱❱
+          Found 'importlib.resources', which is a module only available on Python 3.7+. This does not work in 
+          lower versions, and therefore is not backwards compatible. Use importlib_resources instead for older
+          Python versions.                                                                                    
+          Details: https://sg.run/eL3y                                                                        
+                                                                                                              
+            1┆ import importlib.resources
+                                                                                
+    fail-demo/venv/lib/python3.12/site-packages/pip/_internal/commands/search.py
+   ❯❯❱ python.lang.security.use-defused-xmlrpc.use-defused-xmlrpc
+          ❰❰ Blocking ❱❱
+          Detected use of xmlrpc. xmlrpc is not inherently safe from vulnerabilities. Use defusedxml.xmlrpc
+          instead.                                                                                         
+          Details: https://sg.run/weqY                                                                     
+                                                                                                           
+            5┆ import xmlrpc.client
+                                                                             
+    fail-demo/venv/lib/python3.12/site-packages/pip/_internal/network/auth.py
+    ❯❱ python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure
+          ❰❰ Blocking ❱❱
+          Detected a python logger call with a potential hardcoded secret "Getting credentials from keyring 
+          for %s" being logged. This may lead to secret credentials being exposed. Make sure that the logger
+          is not logging  sensitive information.                                                            
+          Details: https://sg.run/ydNx                                                                      
+                                                                                                            
+           85┆ logger.debug("Getting credentials from keyring for %s", url)
+            ⋮┆----------------------------------------
+    ❯❱ python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure
+          ❰❰ Blocking ❱❱
+          Detected a python logger call with a potential hardcoded secret "Getting password from keyring for
+          %s" being logged. This may lead to secret credentials being exposed. Make sure that the logger is 
+          not logging  sensitive information.                                                               
+          Details: https://sg.run/ydNx                                                                      
+                                                                                                            
+           92┆ logger.debug("Getting password from keyring for %s", url)
+            ⋮┆----------------------------------------
+    ❯❱ python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure
+          ❰❰ Blocking ❱❱
+          Detected a python logger call with a potential hardcoded secret "Found credentials in url for %s"
+          being logged. This may lead to secret credentials being exposed. Make sure that the logger is not
+          logging  sensitive information.                                                                  
+          Details: https://sg.run/ydNx                                                                     
+                                                                                                           
+          346┆ logger.debug("Found credentials in url for %s", netloc)
+            ⋮┆----------------------------------------
+    ❯❱ python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure
+          ❰❰ Blocking ❱❱
+          Detected a python logger call with a potential hardcoded secret "Found credentials in index url for
+          %s" being logged. This may lead to secret credentials being exposed. Make sure that the logger is  
+          not logging  sensitive information.                                                                
+          Details: https://sg.run/ydNx                                                                       
+                                                                                                             
+          362┆ logger.debug("Found credentials in index url for %s", netloc)
+            ⋮┆----------------------------------------
+    ❯❱ python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure
+          ❰❰ Blocking ❱❱
+          Detected a python logger call with a potential hardcoded secret "Found credentials in netrc for %s"
+          being logged. This may lead to secret credentials being exposed. Make sure that the logger is not  
+          logging  sensitive information.                                                                    
+          Details: https://sg.run/ydNx                                                                       
+                                                                                                             
+          369┆ logger.debug("Found credentials in netrc for %s", netloc)
+            ⋮┆----------------------------------------
+    ❯❱ python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure
+          ❰❰ Blocking ❱❱
+          Detected a python logger call with a potential hardcoded secret "Found credentials in keyring for
+          %s" being logged. This may lead to secret credentials being exposed. Make sure that the logger is
+          not logging  sensitive information.                                                              
+          Details: https://sg.run/ydNx                                                                     
+                                                                                                           
+          382┆ logger.debug("Found credentials in keyring for %s", netloc)
+            ⋮┆----------------------------------------
+    ❯❱ python.lang.security.audit.logging.logger-credential-leak.python-logger-credential-disclosure
+          ❰❰ Blocking ❱❱
+          Detected a python logger call with a potential hardcoded secret "401 Error, Credentials not correct
+          for %s" being logged. This may lead to secret credentials being exposed. Make sure that the logger 
+          is not logging  sensitive information.                                                             
+          Details: https://sg.run/ydNx                                                                       
+                                                                                                             
+          541┆ logger.warning(
+          542┆     "401 Error, Credentials not correct for %s",
+          543┆     resp.request.url,
+          544┆ )
+                                                                               
+    fail-demo/venv/lib/python3.12/site-packages/pip/_internal/network/xmlrpc.py
+   ❯❯❱ python.lang.security.use-defused-xmlrpc.use-defused-xmlrpc
+          ❰❰ Blocking ❱❱
+          Detected use of xmlrpc. xmlrpc is not inherently safe from vulnerabilities. Use defusedxml.xmlrpc
+          instead.                                                                                         
+          Details: https://sg.run/weqY                                                                     
+                                                                                                           
+            6┆ import xmlrpc.client
+            ⋮┆----------------------------------------
+           14┆ from xmlrpc.client import _HostType, _Marshallable
+                                                                                    
+    fail-demo/venv/lib/python3.12/site-packages/pip/_internal/self_outdated_check.py
+    ❯❱ python.lang.security.audit.sha224-hash.sha224-hash
+          ❰❰ Blocking ❱❱
+          This code uses a 224-bit hash function, which is deprecated or disallowed in some security policies.
+          Consider updating to a stronger hash function such as SHA-384 or higher to ensure compliance and    
+          security.                                                                                           
+          Details: https://sg.run/Db1Yv                                                                       
+                                                                                                              
+           38┆ name = hashlib.sha224(key_bytes).hexdigest()
+                                                                                 
+    fail-demo/venv/lib/python3.12/site-packages/pip/_internal/utils/subprocess.py
+   ❯❯❱ python.lang.compatibility.python36.python36-compatibility-Popen1
+          ❰❰ Blocking ❱❱
+          the `errors` argument to Popen is only available on Python 3.6+
+          Details: https://sg.run/weBP                                   
+                                                                         
+          141┆ proc = subprocess.Popen(
+          142┆     # Convert HiddenText objects to the underlying str.
+          143┆     reveal_command_args(cmd),
+          144┆     stdin=subprocess.PIPE,
+          145┆     stdout=subprocess.PIPE,
+          146┆     stderr=subprocess.STDOUT if not stdout_only else subprocess.PIPE,
+          147┆     cwd=cwd,
+          148┆     env=env,
+          149┆     errors="backslashreplace",
+          150┆ )
+                                                                                
+    fail-demo/venv/lib/python3.12/site-packages/pip/_internal/utils/unpacking.py
+    ❯❱ python.lang.security.audit.insecure-file-permissions.insecure-file-permissions
+          ❰❰ Blocking ❱❱
+          These permissions `$BITS` are widely permissive and grant access to more people than may be       
+          necessary. A good default is `0o644` which gives read and write access to yourself and read access
+          to everyone else.                                                                                 
+          Details: https://sg.run/AXY4                                                                      
+                                                                                                            
+           93┆ os.chmod(path, (0o777 & ~current_umask() | 0o111))
+                                                                                
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/cachecontrol/_cmd.py
+     ❱ python.lang.security.audit.insecure-transport.requests.request-session-with-http.request-session-with-http
+          ❰❰ Blocking ❱❱
+          Detected a request using 'http://'. This request will be unencrypted. Use 'https://' instead.
+          Details: https://sg.run/DoBY                                                                 
+                                                                                                       
+           33┆ sess.mount("http://", adapter)
+                                                                                             
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/cachecontrol/caches/file_cache.py
+    ❯❱ python.lang.security.audit.sha224-hash.sha224-hash
+          ❰❰ Blocking ❱❱
+          This code uses a 224-bit hash function, which is deprecated or disallowed in some security policies.
+          Consider updating to a stronger hash function such as SHA-384 or higher to ensure compliance and    
+          security.                                                                                           
+          Details: https://sg.run/Db1Yv                                                                       
+                                                                                                              
+           95┆ return hashlib.sha224(x.encode()).hexdigest()
+                                                                           
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/certifi/core.py
+   ❯❯❱ python.lang.compatibility.python37.python37-compatibility-importlib2
+          ❰❰ Blocking ❱❱
+          Found 'importlib.resources', which is a module only available on Python 3.7+. This does not work in 
+          lower versions, and therefore is not backwards compatible. Use importlib_resources instead for older
+          Python versions.                                                                                    
+          Details: https://sg.run/eL3y                                                                        
+                                                                                                              
+           13┆ from importlib.resources import as_file, files
+            ⋮┆----------------------------------------
+           47┆ from importlib.resources import path as get_path, read_text
+                                                                             
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/distlib/compat.py
+   ❯❯❱ python.lang.security.use-defused-xmlrpc.use-defused-xmlrpc
+          ❰❰ Blocking ❱❱
+          Detected use of xmlrpc. xmlrpc is not inherently safe from vulnerabilities. Use defusedxml.xmlrpc
+          instead.                                                                                         
+          Details: https://sg.run/weqY                                                                     
+                                                                                                           
+           42┆ import xmlrpclib
+            ⋮┆----------------------------------------
+           81┆ import xmlrpc.client as xmlrpclib
+                                                                           
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/distlib/util.py
+    ❯❱ python.lang.security.audit.httpsconnection-detected.httpsconnection-detected
+          ❰❰ Blocking ❱❱
+          The HTTPSConnection API has changed frequently with minor releases of Python. Ensure you are using  
+          the API for your version of Python securely. For example, Python 3 versions prior to 3.4.3 will not 
+          verify SSL certificates by default. See                                                             
+          https://docs.python.org/3/library/http.client.html#http.client.HTTPSConnection for more information.
+          Details: https://sg.run/8yby                                                                        
+                                                                                                              
+          1601┆ self._connection = host, httplib.HTTPSConnection(
+          1602┆     h, None, **kwargs)
+                                                                                     
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/pkg_resources/__init__.py
+    ❯❱ python.lang.security.dangerous-globals-use.dangerous-globals-use
+          ❰❰ Blocking ❱❱
+          Found non static data as an index to 'globals()'. This is extremely dangerous because it allows an
+          attacker to execute arbitrary code on the system. Refactor your code not to use 'globals()'.      
+          Details: https://sg.run/jNzn                                                                      
+                                                                                                            
+          151┆ state[k] = g['_sget_' + v](g[k])
+            ⋮┆----------------------------------------
+          151┆ state[k] = g['_sget_' + v](g[k])
+            ⋮┆----------------------------------------
+          158┆ g['_sset_' + _state_vars[k]](k, g[k], v)
+            ⋮┆----------------------------------------
+          158┆ g['_sset_' + _state_vars[k]](k, g[k], v)
+   
+    ❯❱ python.lang.security.audit.exec-detected.exec-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ndRX                                                                     
+                                                                                                           
+          1561┆ exec(code, namespace, namespace)
+            ⋮┆----------------------------------------
+          1572┆ exec(script_code, namespace, namespace)
+   
+    ❯❱ python.lang.security.audit.non-literal-import.non-literal-import
+          ❰❰ Blocking ❱❱
+          Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary
+          code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running  
+          untrusted code.                                                                                  
+          Details: https://sg.run/y6Jk                                                                     
+                                                                                                           
+          2290┆ importlib.import_module(packageName)
+                                                                                           
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/pygments/formatters/__init__.py
+    ❯❱ python.lang.security.audit.exec-detected.exec-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ndRX                                                                     
+                                                                                                           
+          103┆ exec(f.read(), custom_namespace)
+                                                                                       
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/pygments/lexers/__init__.py
+    ❯❱ python.lang.security.audit.exec-detected.exec-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ndRX                                                                     
+                                                                                                           
+          153┆ exec(f.read(), custom_namespace)
+                                                                                 
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/pygments/unistring.py
+    ❯❱ python.lang.security.dangerous-globals-use.dangerous-globals-use
+          ❰❰ Blocking ❱❱
+          Found non static data as an index to 'globals()'. This is extremely dangerous because it allows an
+          attacker to execute arbitrary code on the system. Refactor your code not to use 'globals()'.      
+          Details: https://sg.run/jNzn                                                                      
+                                                                                                            
+           83┆ return ''.join(globals()[cat] for cat in args)
+            ⋮┆----------------------------------------
+           90┆ return ''.join(globals()[cat] for cat in newcats)
+                                                                                         
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/pyparsing/diagram/__init__.py
+    ❯❱ python.flask.security.xss.audit.direct-use-of-jinja2.direct-use-of-jinja2
+          ❰❰ Blocking ❱❱
+          Detected direct use of jinja2. If not done properly, this may bypass HTML escaping which opens up
+          the application to cross-site scripting (XSS) vulnerabilities. Prefer using the Flask method     
+          'render_template()' and templates with a '.html' extension in order to prevent XSS.              
+          Details: https://sg.run/RoKe                                                                     
+                                                                                                           
+          157┆ return template.render(diagrams=data, embed=embed, **kwargs)
+                                                                                                   
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/__init__.py
+   ❯❯❱ python.lang.compatibility.python37.python37-compatibility-importlib2
+          ❰❰ Blocking ❱❱
+          Found 'importlib.resources', which is a module only available on Python 3.7+. This does not work in 
+          lower versions, and therefore is not backwards compatible. Use importlib_resources instead for older
+          Python versions.                                                                                    
+          Details: https://sg.run/eL3y                                                                        
+                                                                                                              
+            7┆ import importlib.resources as resources
+                                                                                                      
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py
+    ❯❱ python.lang.security.audit.non-literal-import.non-literal-import
+          ❰❰ Blocking ❱❱
+          Untrusted user input in `importlib.import_module()` function allows an attacker to load arbitrary
+          code. Avoid dynamic values in `importlib.import_module()` or use a whitelist to prevent running  
+          untrusted code.                                                                                  
+          Details: https://sg.run/y6Jk                                                                     
+                                                                                                           
+           77┆ obj = import_module(mod_path)
+   
+    ❯❱ python.lang.security.dangerous-globals-use.dangerous-globals-use
+          ❰❰ Blocking ❱❱
+          Found non static data as an index to 'globals()'. This is extremely dangerous because it allows an
+          attacker to execute arbitrary code on the system. Refactor your code not to use 'globals()'.      
+          Details: https://sg.run/jNzn                                                                      
+                                                                                                            
+          329┆ hook = globals()[hook_name]
+                                                                            
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/requests/auth.py
+    ❯❱ python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1
+          ❰❰ Blocking ❱❱
+          Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is
+          therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.                 
+          Details: https://sg.run/ydYx                                                                     
+                                                                                                           
+           ▶▶┆ Autofix ▶ hashlib.sha256(x)
+          156┆ return hashlib.sha1(x).hexdigest()
+            ⋮┆----------------------------------------
+           ▶▶┆ Autofix ▶ hashlib.sha256(s)
+          205┆ cnonce = hashlib.sha1(s).hexdigest()[:16]
+                                                                         
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/rich/style.py
+    ❯❱ python.lang.security.audit.marshal.marshal-usage
+          ❰❰ Blocking ❱❱
+          The marshal module is not intended to be secure against erroneous or maliciously constructed data.
+          Never unmarshal data received from an untrusted or unauthenticated source. See more details:      
+          https://docs.python.org/3/library/marshal.html?highlight=security                                 
+          Details: https://sg.run/3xor                                                                      
+                                                                                                            
+          191┆ self._meta = None if meta is None else dumps(meta)
+            ⋮┆----------------------------------------
+          242┆ style._meta = dumps(meta)
+            ⋮┆----------------------------------------
+          475┆ return {} if self._meta is None else cast(Dict[str, Any], loads(self._meta))
+            ⋮┆----------------------------------------
+          751┆ new_style._meta = dumps({**self.meta, **style.meta})
+                                                                              
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/truststore/_api.py
+    ❯❱ python.lang.security.audit.insecure-transport.ssl.no-set-ciphers.no-set-ciphers
+          ❰❰ Blocking ❱❱
+          The 'ssl' module disables insecure cipher suites by default. Therefore, use of 'set_ciphers()'   
+          should only be used when you have very specialized requirements. Otherwise, you risk lowering the
+          security of the SSL channel.                                                                     
+          Details: https://sg.run/0Q0v                                                                     
+                                                                                                           
+          160┆ return self._ctx.set_ciphers(__cipherlist)
+                                                                                        
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/urllib3/contrib/pyopenssl.py
+    ❯❱ python.lang.security.audit.weak-ssl-version.weak-ssl-version
+          ❰❰ Blocking ❱❱
+          An insecure SSL version was detected. TLS versions 1.0, 1.1, and all SSL versions are considered
+          weak encryption and are deprecated. Use 'ssl.PROTOCOL_TLSv1_2' or higher.                       
+          Details: https://sg.run/RoZO                                                                    
+                                                                                                          
+           99┆ ssl.PROTOCOL_TLSv1: OpenSSL.SSL.TLSv1_METHOD,
+            ⋮┆----------------------------------------
+          103┆ _openssl_versions[ssl.PROTOCOL_SSLv3] = OpenSSL.SSL.SSLv3_METHOD
+            ⋮┆----------------------------------------
+          106┆ _openssl_versions[ssl.PROTOCOL_TLSv1_1] = OpenSSL.SSL.TLSv1_1_METHOD
+                                                                                              
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/urllib3/contrib/securetransport.py
+    ❯❱ python.lang.security.audit.weak-ssl-version.weak-ssl-version
+          ❰❰ Blocking ❱❱
+          An insecure SSL version was detected. TLS versions 1.0, 1.1, and all SSL versions are considered
+          weak encryption and are deprecated. Use 'ssl.PROTOCOL_TLSv1_2' or higher.                       
+          Details: https://sg.run/RoZO                                                                    
+                                                                                                          
+          163┆ _protocol_to_min_max[ssl.PROTOCOL_SSLv2] = (
+            ⋮┆----------------------------------------
+          168┆ _protocol_to_min_max[ssl.PROTOCOL_SSLv3] = (
+            ⋮┆----------------------------------------
+          173┆ _protocol_to_min_max[ssl.PROTOCOL_TLSv1] = (
+            ⋮┆----------------------------------------
+          178┆ _protocol_to_min_max[ssl.PROTOCOL_TLSv1_1] = (
+                                                                                
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/urllib3/util/ssl_.py
+    ❯❱ python.lang.security.audit.ssl-wrap-socket-is-deprecated.ssl-wrap-socket-is-deprecated
+          ❰❰ Blocking ❱❱
+          'ssl.wrap_socket()' is deprecated. This function creates an insecure socket without server name 
+          indication or hostname matching. Instead, create an SSL context using 'ssl.SSLContext()' and use
+          that to wrap a socket.                                                                          
+          Details: https://sg.run/PJOY                                                                    
+                                                                                                          
+          179┆ return wrap_socket(socket, ciphers=self.ciphers, **kwargs)
+   
+    ❯❱ python.lang.security.audit.insecure-transport.ssl.no-set-ciphers.no-set-ciphers
+          ❰❰ Blocking ❱❱
+          The 'ssl' module disables insecure cipher suites by default. Therefore, use of 'set_ciphers()'   
+          should only be used when you have very specialized requirements. Otherwise, you risk lowering the
+          security of the SSL channel.                                                                     
+          Details: https://sg.run/0Q0v                                                                     
+                                                                                                           
+          292┆ context.set_ciphers(ciphers or DEFAULT_CIPHERS)
+                                                                                    
+    fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/webencodings/mklabels.py
+    ❯❱ python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected
+          ❰❰ Blocking ❱❱
+          Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic    
+          value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib  
+          calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+          Details: https://sg.run/dKZZ                                                                        
+                                                                                                              
+           47┆ for category in json.loads(urlopen(url).read().decode('ascii'))
+                                                                               
+    fail-demo/venv/lib/python3.12/site-packages/pygments/formatters/__init__.py
+    ❯❱ python.lang.security.audit.exec-detected.exec-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ndRX                                                                     
+                                                                                                           
+          103┆ exec(f.read(), custom_namespace)
+                                                                           
+    fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/__init__.py
+    ❯❱ python.lang.security.audit.exec-detected.exec-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of exec(). exec() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ndRX                                                                     
+                                                                                                           
+          154┆ exec(f.read(), custom_namespace)
+                                                                                
+    fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/_lua_builtins.py
+    ❯❱ python.lang.security.audit.insecure-transport.urllib.insecure-urlopen.insecure-urlopen
+          ❰❰ Blocking ❱❱
+          Detected 'urllib.urlopen()' using 'http://'. This request will not be encrypted. Use 'https://'
+          instead.                                                                                       
+          Details: https://sg.run/oxB9                                                                   
+                                                                                                         
+           ▶▶┆ Autofix ▶ urlopen('https://www.lua.org/manual/')
+          225┆ f = urlopen('http://www.lua.org/manual/')
+   
+    ❯❱ python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected
+          ❰❰ Blocking ❱❱
+          Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic    
+          value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib  
+          calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+          Details: https://sg.run/dKZZ                                                                        
+                                                                                                              
+          233┆ f = urlopen(f'http://www.lua.org/manual/{version}/')
+                                                                                
+    fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/_php_builtins.py
+   ❯❯❱ trailofbits.python.tarfile-extractall-traversal.tarfile-extractall-traversal
+          ❰❰ Blocking ❱❱
+          Possible path traversal through `tarfile.open($PATH).extractall()` if the source tar is controlled
+          by an attacker                                                                                    
+          Details: https://sg.run/2RLD                                                                      
+                                                                                                            
+          3300┆ with tarfile.open(download[0]) as tar:
+          3301┆     if hasattr(tarfile.TarFile, 'extraction_filter'):
+          3302┆         tar.extractall(filter='data')
+          3303┆     else:
+          3304┆         tar.extractall()
+                                                                     
+    fail-demo/venv/lib/python3.12/site-packages/pygments/unistring.py
+    ❯❱ python.lang.security.dangerous-globals-use.dangerous-globals-use
+          ❰❰ Blocking ❱❱
+          Found non static data as an index to 'globals()'. This is extremely dangerous because it allows an
+          attacker to execute arbitrary code on the system. Refactor your code not to use 'globals()'.      
+          Details: https://sg.run/jNzn                                                                      
+                                                                                                            
+           83┆ return ''.join(globals()[cat] for cat in args)
+            ⋮┆----------------------------------------
+           90┆ return ''.join(globals()[cat] for cat in newcats)
+                                                                         
+    fail-demo/venv/lib/python3.12/site-packages/werkzeug/contrib/cache.py
+    ❯❱ python.lang.security.deserialization.pickle.avoid-cPickle
+          ❰❰ Blocking ❱❱
+          Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling,
+          the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the
+          relevant data as JSON or a similar text-based serialization format.                              
+          Details: https://sg.run/eLxb                                                                     
+                                                                                                           
+          322┆ return pickle.loads(value)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-pickle
+          ❰❰ Blocking ❱❱
+          Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the
+          serialized data could be manipulated to run arbitrary code. Instead, consider serializing the       
+          relevant data as JSON or a similar text-based serialization format.                                 
+          Details: https://sg.run/OPwB                                                                        
+                                                                                                              
+          322┆ return pickle.loads(value)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-cPickle
+          ❰❰ Blocking ❱❱
+          Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling,
+          the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the
+          relevant data as JSON or a similar text-based serialization format.                              
+          Details: https://sg.run/eLxb                                                                     
+                                                                                                           
+          329┆ self._cache[key] = (expires, pickle.dumps(value, pickle.HIGHEST_PROTOCOL))
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-pickle
+          ❰❰ Blocking ❱❱
+          Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the
+          serialized data could be manipulated to run arbitrary code. Instead, consider serializing the       
+          relevant data as JSON or a similar text-based serialization format.                                 
+          Details: https://sg.run/OPwB                                                                        
+                                                                                                              
+          329┆ self._cache[key] = (expires, pickle.dumps(value, pickle.HIGHEST_PROTOCOL))
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-cPickle
+          ❰❰ Blocking ❱❱
+          Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling,
+          the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the
+          relevant data as JSON or a similar text-based serialization format.                              
+          Details: https://sg.run/eLxb                                                                     
+                                                                                                           
+          335┆ item = (expires, pickle.dumps(value, pickle.HIGHEST_PROTOCOL))
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-pickle
+          ❰❰ Blocking ❱❱
+          Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the
+          serialized data could be manipulated to run arbitrary code. Instead, consider serializing the       
+          relevant data as JSON or a similar text-based serialization format.                                 
+          Details: https://sg.run/OPwB                                                                        
+                                                                                                              
+          335┆ item = (expires, pickle.dumps(value, pickle.HIGHEST_PROTOCOL))
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-cPickle
+          ❰❰ Blocking ❱❱
+          Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling,
+          the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the
+          relevant data as JSON or a similar text-based serialization format.                              
+          Details: https://sg.run/eLxb                                                                     
+                                                                                                           
+          611┆ return b"!" + pickle.dumps(value)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-pickle
+          ❰❰ Blocking ❱❱
+          Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the
+          serialized data could be manipulated to run arbitrary code. Instead, consider serializing the       
+          relevant data as JSON or a similar text-based serialization format.                                 
+          Details: https://sg.run/OPwB                                                                        
+                                                                                                              
+          611┆ return b"!" + pickle.dumps(value)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-cPickle
+          ❰❰ Blocking ❱❱
+          Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling,
+          the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the
+          relevant data as JSON or a similar text-based serialization format.                              
+          Details: https://sg.run/eLxb                                                                     
+                                                                                                           
+          621┆ return pickle.loads(value[1:])
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-pickle
+          ❰❰ Blocking ❱❱
+          Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the
+          serialized data could be manipulated to run arbitrary code. Instead, consider serializing the       
+          relevant data as JSON or a similar text-based serialization format.                                 
+          Details: https://sg.run/OPwB                                                                        
+                                                                                                              
+          621┆ return pickle.loads(value[1:])
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-cPickle
+          ❰❰ Blocking ❱❱
+          Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling,
+          the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the
+          relevant data as JSON or a similar text-based serialization format.                              
+          Details: https://sg.run/eLxb                                                                     
+                                                                                                           
+          778┆ expires = pickle.load(f)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-pickle
+          ❰❰ Blocking ❱❱
+          Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the
+          serialized data could be manipulated to run arbitrary code. Instead, consider serializing the       
+          relevant data as JSON or a similar text-based serialization format.                                 
+          Details: https://sg.run/OPwB                                                                        
+                                                                                                              
+          778┆ expires = pickle.load(f)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-cPickle
+          ❰❰ Blocking ❱❱
+          Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling,
+          the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the
+          relevant data as JSON or a similar text-based serialization format.                              
+          Details: https://sg.run/eLxb                                                                     
+                                                                                                           
+          807┆ pickle_time = pickle.load(f)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-pickle
+          ❰❰ Blocking ❱❱
+          Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the
+          serialized data could be manipulated to run arbitrary code. Instead, consider serializing the       
+          relevant data as JSON or a similar text-based serialization format.                                 
+          Details: https://sg.run/OPwB                                                                        
+                                                                                                              
+          807┆ pickle_time = pickle.load(f)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-cPickle
+          ❰❰ Blocking ❱❱
+          Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling,
+          the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the
+          relevant data as JSON or a similar text-based serialization format.                              
+          Details: https://sg.run/eLxb                                                                     
+                                                                                                           
+          809┆ return pickle.load(f)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-pickle
+          ❰❰ Blocking ❱❱
+          Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the
+          serialized data could be manipulated to run arbitrary code. Instead, consider serializing the       
+          relevant data as JSON or a similar text-based serialization format.                                 
+          Details: https://sg.run/OPwB                                                                        
+                                                                                                              
+          809┆ return pickle.load(f)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-cPickle
+          ❰❰ Blocking ❱❱
+          Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling,
+          the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the
+          relevant data as JSON or a similar text-based serialization format.                              
+          Details: https://sg.run/eLxb                                                                     
+                                                                                                           
+          838┆ pickle.dump(timeout, f, 1)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-pickle
+          ❰❰ Blocking ❱❱
+          Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the
+          serialized data could be manipulated to run arbitrary code. Instead, consider serializing the       
+          relevant data as JSON or a similar text-based serialization format.                                 
+          Details: https://sg.run/OPwB                                                                        
+                                                                                                              
+          838┆ pickle.dump(timeout, f, 1)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-cPickle
+          ❰❰ Blocking ❱❱
+          Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling,
+          the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the
+          relevant data as JSON or a similar text-based serialization format.                              
+          Details: https://sg.run/eLxb                                                                     
+                                                                                                           
+          839┆ pickle.dump(value, f, pickle.HIGHEST_PROTOCOL)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-pickle
+          ❰❰ Blocking ❱❱
+          Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the
+          serialized data could be manipulated to run arbitrary code. Instead, consider serializing the       
+          relevant data as JSON or a similar text-based serialization format.                                 
+          Details: https://sg.run/OPwB                                                                        
+                                                                                                              
+          839┆ pickle.dump(value, f, pickle.HIGHEST_PROTOCOL)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-cPickle
+          ❰❰ Blocking ❱❱
+          Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling,
+          the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the
+          relevant data as JSON or a similar text-based serialization format.                              
+          Details: https://sg.run/eLxb                                                                     
+                                                                                                           
+          865┆ pickle_time = pickle.load(f)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-pickle
+          ❰❰ Blocking ❱❱
+          Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the
+          serialized data could be manipulated to run arbitrary code. Instead, consider serializing the       
+          relevant data as JSON or a similar text-based serialization format.                                 
+          Details: https://sg.run/OPwB                                                                        
+                                                                                                              
+          865┆ pickle_time = pickle.load(f)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-cPickle
+          ❰❰ Blocking ❱❱
+          Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling,
+          the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the
+          relevant data as JSON or a similar text-based serialization format.                              
+          Details: https://sg.run/eLxb                                                                     
+                                                                                                           
+          914┆ return pickle.loads(rv)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-pickle
+          ❰❰ Blocking ❱❱
+          Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the
+          serialized data could be manipulated to run arbitrary code. Instead, consider serializing the       
+          relevant data as JSON or a similar text-based serialization format.                                 
+          Details: https://sg.run/OPwB                                                                        
+                                                                                                              
+          914┆ return pickle.loads(rv)
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-cPickle
+          ❰❰ Blocking ❱❱
+          Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling,
+          the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the
+          relevant data as JSON or a similar text-based serialization format.                              
+          Details: https://sg.run/eLxb                                                                     
+                                                                                                           
+          921┆ key, pickle.dumps(value), self._normalize_timeout(timeout), self.cache
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-pickle
+          ❰❰ Blocking ❱❱
+          Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the
+          serialized data could be manipulated to run arbitrary code. Instead, consider serializing the       
+          relevant data as JSON or a similar text-based serialization format.                                 
+          Details: https://sg.run/OPwB                                                                        
+                                                                                                              
+          921┆ key, pickle.dumps(value), self._normalize_timeout(timeout), self.cache
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-cPickle
+          ❰❰ Blocking ❱❱
+          Avoid using `cPickle`, which is known to lead to code execution vulnerabilities. When unpickling,
+          the serialized data could be manipulated to run arbitrary code. Instead, consider serializing the
+          relevant data as JSON or a similar text-based serialization format.                              
+          Details: https://sg.run/eLxb                                                                     
+                                                                                                           
+          926┆ key, pickle.dumps(value), self._normalize_timeout(timeout), self.cache
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-pickle
+          ❰❰ Blocking ❱❱
+          Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the
+          serialized data could be manipulated to run arbitrary code. Instead, consider serializing the       
+          relevant data as JSON or a similar text-based serialization format.                                 
+          Details: https://sg.run/OPwB                                                                        
+                                                                                                              
+          926┆ key, pickle.dumps(value), self._normalize_timeout(timeout), self.cache
+                                                                            
+    fail-demo/venv/lib/python3.12/site-packages/werkzeug/contrib/sessions.py
+    ❯❱ python.lang.security.insecure-hash-algorithms.insecure-hash-algorithm-sha1
+          ❰❰ Blocking ❱❱
+          Detected SHA1 hash algorithm which is considered insecure. SHA1 is not collision resistant and is
+          therefore not suitable as a cryptographic signature. Use SHA256 or SHA3 instead.                 
+          Details: https://sg.run/ydYx                                                                     
+                                                                                                           
+           ▶▶┆ Autofix ▶ sha256(b"".join([salt, str(time()).encode("ascii"), _urandom()]))
+           95┆ return sha1(b"".join([salt, str(time()).encode("ascii"), _urandom()])).hexdigest()
+   
+    ❯❱ python.lang.security.deserialization.pickle.avoid-pickle
+          ❰❰ Blocking ❱❱
+          Avoid using `pickle`, which is known to lead to code execution vulnerabilities. When unpickling, the
+          serialized data could be manipulated to run arbitrary code. Instead, consider serializing the       
+          relevant data as JSON or a similar text-based serialization format.                                 
+          Details: https://sg.run/OPwB                                                                        
+                                                                                                              
+          259┆ dump(dict(session), f, HIGHEST_PROTOCOL)
+            ⋮┆----------------------------------------
+          287┆ data = load(f)
+                                                                         
+    fail-demo/venv/lib/python3.12/site-packages/werkzeug/debug/console.py
+    ❯❱ python.lang.security.audit.eval-detected.eval-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ZvrD                                                                     
+                                                                                                           
+          180┆ eval(code, self.globals, self.locals)
+                                                                         
+    fail-demo/venv/lib/python3.12/site-packages/werkzeug/debug/tbtools.py
+    ❯❱ python.lang.security.audit.dynamic-urllib-use-detected.dynamic-urllib-use-detected
+          ❰❰ Blocking ❱❱
+          Detected a dynamic value being used with urllib. urllib supports 'file://' schemes, so a dynamic    
+          value controlled by a malicious actor may allow them to read arbitrary files. Audit uses of urllib  
+          calls to ensure user data cannot control the URLs, or consider using the 'requests' library instead.
+          Details: https://sg.run/dKZZ                                                                        
+                                                                                                              
+          297┆ rv = urlopen("https://api.github.com/gists", data=data)
+   
+    ❯❱ python.lang.security.audit.eval-detected.eval-detected
+          ❰❰ Blocking ❱❱
+          Detected the use of eval(). eval() can be dangerous if used to evaluate dynamic content. If this 
+          content can be input from outside the program, this may be a code injection vulnerability. Ensure
+          evaluated content is not definable by external sources.                                          
+          Details: https://sg.run/ZvrD                                                                     
+                                                                                                           
+          554┆ return eval(code, self.globals, self.locals)
+                                                                                 
+    fail-demo/venv/lib/python3.12/site-packages/werkzeug/middleware/http_proxy.py
+    ❯❱ python.lang.security.audit.httpsconnection-detected.httpsconnection-detected
+          ❰❰ Blocking ❱❱
+          The HTTPSConnection API has changed frequently with minor releases of Python. Ensure you are using  
+          the API for your version of Python securely. For example, Python 3 versions prior to 3.4.3 will not 
+          verify SSL certificates by default. See                                                             
+          https://docs.python.org/3/library/http.client.html#http.client.HTTPSConnection for more information.
+          Details: https://sg.run/8yby                                                                        
+                                                                                                              
+          137┆ con = client.HTTPSConnection(
+          138┆     target.ascii_host,
+          139┆     target.port or 443,
+          140┆     timeout=self.timeout,
+          141┆     context=opts["ssl_context"],
+          142┆ )
+                                                                   
+    fail-demo/venv/lib/python3.12/site-packages/werkzeug/serving.py
+    ❯❱ python.lang.security.audit.ssl-wrap-socket-is-deprecated.ssl-wrap-socket-is-deprecated
+          ❰❰ Blocking ❱❱
+          'ssl.wrap_socket()' is deprecated. This function creates an insecure socket without server name 
+          indication or hostname matching. Instead, create an SSL context using 'ssl.SSLContext()' and use
+          that to wrap a socket.                                                                          
+          Details: https://sg.run/PJOY                                                                    
+                                                                                                          
+          587┆ return ssl.wrap_socket(
+          588┆     sock,
+          589┆     keyfile=self._keyfile,
+          590┆     certfile=self._certfile,
+          591┆     ssl_version=self._protocol,
+          592┆     **kwargs
+          593┆ )
+                
+                
+┌──────────────┐
+│ Scan Summary │
+└──────────────┘
+✅ Scan completed successfully.
+ • Findings: 146 (146 blocking)
+ • Rules run: 484
+ • Targets scanned: 2231
+ • Parsed lines: ~100.0%
+ • Scan skipped: 
+   ◦ Files matching .semgrepignore patterns: 31
+ • Scan was limited to files tracked by git
+ • For a detailed list of skipped files and lines, run semgrep with the --verbose flag
+Ran 484 rules on 2231 files: 146 findings.
+

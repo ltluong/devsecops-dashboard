@@ -1,0 +1,4 @@
+2026-06-13 14:33:51,140 Failed to access summary file /home/zap/zap_out.json
+Using the Automation Framework
+Automation plan failures:
+	Job spider failed to access URL http://localhost:5000 : Connect to http://localhost:5000 [localhost/127.0.0.1, localhost/0:0:0:0:0:0:0:1] failed: Connection refused

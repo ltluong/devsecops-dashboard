@@ -1,0 +1,55 @@
+2026-06-13T20:55:32+07:00	INFO	[vuln] Vulnerability scanning is enabled
+2026-06-13T20:55:32+07:00	INFO	[secret] Secret scanning is enabled
+2026-06-13T20:55:32+07:00	INFO	[secret] If your scanning is slow, please try '--scanners vuln' to disable secret scanning
+2026-06-13T20:55:32+07:00	INFO	[secret] Please see https://trivy.dev/docs/v0.70/guide/scanner/secret#recommendation for faster secret detection
+2026-06-13T20:55:40+07:00	INFO	[python] Licenses acquired from one or more METADATA files may be subject to additional terms. Use `--debug` flag to see all affected packages.
+2026-06-13T20:55:40+07:00	INFO	Number of language-specific files	num=1
+2026-06-13T20:55:40+07:00	INFO	[pip] Detecting vulnerabilities...
+
+Report Summary
+
+┌──────────────────┬──────┬─────────────────┬─────────┐
+│      Target      │ Type │ Vulnerabilities │ Secrets │
+├──────────────────┼──────┼─────────────────┼─────────┤
+│ requirements.txt │ pip  │        6        │    -    │
+└──────────────────┴──────┴─────────────────┴─────────┘
+Legend:
+- '-': Not scanned
+- '0': Clean (no security findings detected)
+
+
+requirements.txt (pip)
+======================
+Total: 6 (HIGH: 6, CRITICAL: 0)
+
+┌──────────┬────────────────┬──────────┬────────┬───────────────────┬───────────────┬─────────────────────────────────────────────────────────────┐
+│ Library  │ Vulnerability  │ Severity │ Status │ Installed Version │ Fixed Version │                            Title                            │
+├──────────┼────────────────┼──────────┼────────┼───────────────────┼───────────────┼─────────────────────────────────────────────────────────────┤
+│ Flask    │ CVE-2023-30861 │ HIGH     │ fixed  │ 1.0               │ 2.3.2, 2.2.5  │ flask: Possible disclosure of permanent session cookie due  │
+│          │                │          │        │                   │               │ to missing Vary: Cookie...                                  │
+│          │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2023-30861                  │
+├──────────┼────────────────┤          │        ├───────────────────┼───────────────┼─────────────────────────────────────────────────────────────┤
+│ Jinja2   │ CVE-2019-10906 │          │        │ 2.10              │ 2.10.1        │ python-jinja2: str.format_map allows sandbox escape         │
+│          │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2019-10906                  │
+├──────────┼────────────────┤          │        ├───────────────────┼───────────────┼─────────────────────────────────────────────────────────────┤
+│ Werkzeug │ CVE-2019-14322 │          │        │ 0.15              │ 0.15.5        │ Pallets Werkzeug vulnerable to Path Traversal               │
+│          │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2019-14322                  │
+│          ├────────────────┤          │        │                   ├───────────────┼─────────────────────────────────────────────────────────────┤
+│          │ CVE-2019-14806 │          │        │                   │ 0.15.3        │ python-werkzeug: insufficient debugger PIN randomness       │
+│          │                │          │        │                   │               │ vulnerability                                               │
+│          │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2019-14806                  │
+│          ├────────────────┤          │        │                   ├───────────────┼─────────────────────────────────────────────────────────────┤
+│          │ CVE-2023-25577 │          │        │                   │ 2.2.3         │ python-werkzeug: high resource usage when parsing multipart │
+│          │                │          │        │                   │               │ form data with many fields...                               │
+│          │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2023-25577                  │
+│          ├────────────────┤          │        │                   ├───────────────┼─────────────────────────────────────────────────────────────┤
+│          │ CVE-2024-34069 │          │        │                   │ 3.0.3         │ python-werkzeug: user may execute code on a developer's     │
+│          │                │          │        │                   │               │ machine                                                     │
+│          │                │          │        │                   │               │ https://avd.aquasec.com/nvd/cve-2024-34069                  │
+└──────────┴────────────────┴──────────┴────────┴───────────────────┴───────────────┴─────────────────────────────────────────────────────────────┘
+
+📣 [34mNotices:[0m
+  - Version 0.71.0 of Trivy is now available, current version is 0.70.0
+
+To suppress version checks, run Trivy scans with the --skip-version-check flag
+
