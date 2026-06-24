@@ -1,0 +1,1 @@
+ 2jsXjhrfrontend/src/pages/Findings.jsx

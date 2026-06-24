@@ -1,0 +1,1 @@
+ 2jsXihr*frontend/src/components/GatesDashboard.jsx

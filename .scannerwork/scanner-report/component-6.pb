@@ -1,0 +1,1 @@
+ 2jsXShr#frontend/src/pages/TrivyDetails.jsx

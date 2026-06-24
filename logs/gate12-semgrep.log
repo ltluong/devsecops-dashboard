@@ -21,20 +21,18 @@ Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pip/_
 running the following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
 Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pip/_vendor/rich/_emoji_codes.py when running
 the following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
-Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/_cocoa_builtins.py when
-running the following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
 Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/_lasso_builtins.py when
-running the following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
-Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/_lilypond_builtins.py when
 running the following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
 Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/_mapping.py when running the
 following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
 Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/_vim_builtins.py when running
 the following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
+Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/lisp.py when running the
+following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
 Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/matlab.py when running the
 following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
-Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/ncl.py when running the
-following rules: [python.boto3.security.hardcoded-token.hardcoded-token]
+Warning: 1 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/pygments/lexers/phix.py when running the
+following rules: [python.lang.security.audit.insecure-transport.requests.request-with-http.request-with-http]
 Warning: 3 timeout error(s) in fail-demo/venv/lib/python3.12/site-packages/werkzeug/debug/shared/jquery.js when running
 the following rules: [javascript.aws-lambda.security.tainted-html-response.tainted-html-response, javascript.aws-
 lambda.security.tainted-html-string.tainted-html-string, javascript.express.security.audit.express-ssrf.express-ssrf]
