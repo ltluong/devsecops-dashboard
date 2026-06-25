@@ -19,9 +19,7 @@ def home():
 @app.route("/search")
 def search():
 
-    q = request.args.get("q")
-
-    eval(q)
+    q = request.args.get("q", "")
 
     return f"Result: {q}"
 
